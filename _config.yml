@@ -13,7 +13,7 @@
 # you will see them accessed via {{ site.title }}, {{ site.email }}, and so on.
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
-title: My First Jekyll
+title: Naufal's Blog
 email: nhilmiaji@gmail.com
 description: >- # this means to ignore newlines until "baseurl:"
   Just an app starter using Jekyll.
@@ -24,7 +24,7 @@ instagram_username: naufalhilmiaji
 
 # Author and Copyright of the web-app
 author: Naufal Hilmiaji
-copyright: "Kojoy, Inc."
+copyright: "naufalhilmiaji"
 
 # Build settings
 markdown: kramdown

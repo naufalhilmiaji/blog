@@ -1,20 +1,67 @@
 <!DOCTYPE html>
-<html lang="{{ page.lang | default: site.lang | default: "en" }}">
+<html lang="{{ page.lang | default: site.lang | default: " en" }}">
 
-  {%- include head.html -%}
+{%- include head.html -%}
 
-  <body>
+<body>
 
-    {%- include header.html -%}
+	{%- include header.html -%}
 
-    <main class="page-content" aria-label="Content">
-      <div class="wrapper">
-        {{ content }}
-      </div>
-    </main>
+	<main class="page-content" aria-label="Content">
+		<div class="wrapper">
+			{{ content }}
+		</div>
+	</main>
 
-    {%- include footer.html -%}
+	{%- include footer.html -%}
 
-  </body>
+</body>
+<!-- Include the required files -->
+<script src="https://unpkg.com/github-api/dist/GitHub.min.js"></script>
+<script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+
+<!-- Start simple MDE -->
+<script>
+	var simplemde = new SimpleMDE({ element: document.querySelector("#u-input"), placeholder: "Type here" });
+
+	function saveTextAsFile() {
+		let mdValue = simplemde.codemirror.getValue();
+		let title = document.querySelector('input#title').value;
+		let topic = document.querySelector('#topic').value;
+		let textToWrite = `---\nlayout: post\ntitle:  ${title}\ndate:   2023-02-11 12:20:53\ncategory: ${topic}\n---\n${mdValue}`;
+		if (title != '') {
+			title = title.replace(/\s+/g, '-').toLowerCase();
+			title = title.replace(/\W+(?!$)/g, '-');
+		} else {
+			title = "post-baru";
+		}
+
+		let textFileAsBlob = new Blob([textToWrite], {type:'text/plain'});
+		let dateNow = new Date().toJSON().slice(0,10);
+		let fileNameToSaveAs = `${dateNow}-${title}.md`;
+	
+		let downloadLink = document.createElement("a");
+		downloadLink.download = fileNameToSaveAs;
+		downloadLink.innerHTML = "Download File";
+		if (window.webkitURL != null)
+		{
+			downloadLink.href = window.webkitURL.createObjectURL(textFileAsBlob);
+		}
+		else
+		{
+			// Firefox requires the link to be added to the DOM
+			// before it can be clicked.
+			downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
+			downloadLink.onclick = destroyClickedElement;
+			downloadLink.style.display = "none";
+			document.body.appendChild(downloadLink);
+		}
+	
+		downloadLink.click();
+	}
+    
+	var button = document.getElementById('download');
+	button.addEventListener('click', saveTextAsFile);
+</script>
 
 </html>
