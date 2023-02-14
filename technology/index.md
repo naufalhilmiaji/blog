@@ -5,4 +5,5 @@
 layout: technology
 title: "Technology"
 category: technology
+order: 3
 ---

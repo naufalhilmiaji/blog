@@ -3,14 +3,18 @@ layout: default
 ---
 
 <header class="post-header">
-    <h1 class="post-title">{{ page.title | escape }}</h1>
+    <h1 class="post-title text-primary">{{ page.title | escape }}</h1>
 </header>
 
-<input class="user-input" id="title" type="text" placeholder="Post Title">
-<select class="user-input" id="topic">
-    <option value="0">Choose a Topic</option>
-    <option value="business">Business</option>
-    <option value="technology">Technology</option>
-</select>
-<textarea class="user-input" id="u-input" cols="30" rows="10" style="width: 100%"></textarea>
+<div class="row">
+    <input class="user-input col-md-6" id="title" type="text" placeholder="Post Title">
+    <select class="user-input col-md-6" id="topic">
+        <option value="0">Choose a Topic</option>
+        <option value="business">Business</option>
+        <option value="technology">Technology</option>
+        <option value="sport">Sport</option>
+    </select>
+</div>
+
+<textarea class="user-input" id="u-input"></textarea>
 <button id="download" download>Download</button>

@@ -28,27 +28,26 @@
 		let mdValue = simplemde.codemirror.getValue();
 		let title = document.querySelector('input#title').value;
 		let topic = document.querySelector('#topic').value;
-		let textToWrite = `---\nlayout: post\ntitle:  ${title}\ndate:   2023-02-11 12:20:53\ncategory: ${topic}\n---\n${mdValue}`;
+		let dateNow = new Date().toJSON().slice(0, 19).replace('T', ' ');
+		let textToWrite = `---\nlayout: post\ntitle:  ${title}\ndate:   ${dateNow}\ncategory: ${topic}\n---\n${mdValue}`;
 		if (title != '') {
+			title = title.replace(/[^a-zA-Z0-9\s]+/g, '');
 			title = title.replace(/\s+/g, '-').toLowerCase();
-			title = title.replace(/\W+(?!$)/g, '-');
 		} else {
 			title = "post-baru";
 		}
 
-		let textFileAsBlob = new Blob([textToWrite], {type:'text/plain'});
-		let dateNow = new Date().toJSON().slice(0,10);
-		let fileNameToSaveAs = `${dateNow}-${title}.md`;
-	
+		let textFileAsBlob = new Blob([textToWrite], { type: 'text/plain' });
+		fileDate = dateNow.slice(0, 10);
+		let fileNameToSaveAs = `${fileDate}-${title}.md`;
+
 		let downloadLink = document.createElement("a");
 		downloadLink.download = fileNameToSaveAs;
 		downloadLink.innerHTML = "Download File";
-		if (window.webkitURL != null)
-		{
+		if (window.webkitURL != null) {
 			downloadLink.href = window.webkitURL.createObjectURL(textFileAsBlob);
 		}
-		else
-		{
+		else {
 			// Firefox requires the link to be added to the DOM
 			// before it can be clicked.
 			downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
@@ -56,12 +55,118 @@
 			downloadLink.style.display = "none";
 			document.body.appendChild(downloadLink);
 		}
-	
+
 		downloadLink.click();
 	}
-    
+
 	var button = document.getElementById('download');
-	button.addEventListener('click', saveTextAsFile);
+	if (button) {
+		button.addEventListener('click', saveTextAsFile);
+	}
+
+	const paginationNumbers = document.querySelector('#pagination-numbers');
+	const paginatedList = document.querySelector(".post-list");
+
+	if (paginatedList) {
+		const listItems = paginatedList.querySelectorAll("li");
+		const nextButton = document.querySelector("#next-button");
+		const prevButton = document.querySelector("#prev-button");
+
+		const paginationLimit = 5;
+		const pageCount = Math.ceil(listItems.length / paginationLimit);
+		let currentPage = 1;
+
+		const disableButton = (button) => {
+			button.classList.add("disabled");
+			button.setAttribute("disabled", true);
+		};
+
+		const enableButton = (button) => {
+			button.classList.remove("disabled");
+			button.removeAttribute("disabled");
+		};
+
+		const handlePageButtonsStatus = () => {
+			if (currentPage === 1) {
+				disableButton(prevButton);
+			} else {
+				enableButton(prevButton);
+			}
+
+			if (pageCount === currentPage) {
+				disableButton(nextButton);
+			} else {
+				enableButton(nextButton);
+			}
+		};
+
+		const handleActivePageNumber = () => {
+			document.querySelectorAll(".pagination-number").forEach((button) => {
+				button.classList.remove("active");
+				const pageIndex = Number(button.getAttribute("page-index"));
+				if (pageIndex == currentPage) {
+					button.classList.add("active");
+				}
+			});
+		};
+
+		const appendPageNumber = (index) => {
+			const pageNumber = document.createElement("button");
+			pageNumber.className = "pagination-number";
+			pageNumber.innerHTML = index;
+			pageNumber.setAttribute("page-index", index);
+			pageNumber.setAttribute("aria-label", "Page " + index);
+
+			paginationNumbers.appendChild(pageNumber);
+		};
+
+		const getPaginationNumbers = () => {
+			for (let i = 1; i <= pageCount; i++) {
+				appendPageNumber(i);
+			}
+		};
+
+		const setCurrentPage = (pageNum) => {
+			currentPage = pageNum;
+
+			handleActivePageNumber();
+			handlePageButtonsStatus();
+
+			const prevRange = (pageNum - 1) * paginationLimit;
+			const currRange = pageNum * paginationLimit;
+
+			listItems.forEach((item, index) => {
+				item.classList.add("hidden");
+				if (index >= prevRange && index < currRange) {
+					item.classList.remove("hidden");
+				}
+			});
+		};
+
+		window.addEventListener("load", () => {
+			getPaginationNumbers();
+			setCurrentPage(1);
+
+			prevButton.addEventListener("click", () => {
+				setCurrentPage(currentPage - 1);
+			});
+
+			nextButton.addEventListener("click", () => {
+				setCurrentPage(currentPage + 1);
+			});
+
+			document.querySelectorAll(".pagination-number").forEach((button) => {
+				const pageIndex = Number(button.getAttribute("page-index"));
+
+				if (pageIndex) {
+					button.addEventListener("click", () => {
+						setCurrentPage(pageIndex);
+					});
+				}
+			});
+		});
+	}
+
 </script>
 
 </html>
