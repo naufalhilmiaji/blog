@@ -18,12 +18,17 @@
 	margin-bottom: 1rem;
 }
 
-button#download {
+.btn-primary {
 	padding: 0.5rem 1rem;
 	border: 1px solid $primary;
 	border-radius: 25px;
 	background-color: transparent;
 	cursor: pointer;
+
+	&:hover {
+		color: #fff;
+		background: $primary;
+	}
 }
 
 .pagination-container {
@@ -45,12 +50,6 @@ button#download {
 	border-radius: .2rem;
 	color: $primary;
 	cursor: pointer;
-}
-
-.pagination-number:hover,
-.pagination-button:not(.disabled):hover {
-	color: #fff;
-	background: $primary;
 }
 
 .pagination-number.active {
